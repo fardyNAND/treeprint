@@ -60,10 +60,7 @@ void modifyGrid(int row, int col, int amount, Treenode *root, std::vector<std::v
     {
         return;
     }
-    if (row >= amount or col >= amount)
-    {
-        return;
-    }
+
     grid[row][col].val = std::to_string(root->val);
     grid[row][col].changed = true;
     used_row.insert(row);
@@ -84,7 +81,6 @@ void modifyGrid(int row, int col, int amount, Treenode *root, std::vector<std::v
         {
             grid[i][col - 2].val = "│";
             grid[i][col - 2].changed = true;
-
             --i;
         }
     }
@@ -204,9 +200,6 @@ int main()
     node25->children = {node19};
     
     node27->children = {node1};
-
-    //std::cout << totalNodes(node1) << "\n";
-    //std::cout << maxDepth(node1) << "\n\n";
 
     showTree(node27);
 }
