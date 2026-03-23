@@ -20,14 +20,14 @@ struct Cell
 };
 
 //get total amount of nodes
-int totalNodes(Treenode *root)
+size_t totalNodes(Treenode *root)
 {
     if (root == nullptr)
     {
         return 0;
     }
 
-    int count = 1;
+    size_t count = 1;
     for (Treenode *child : root->children)
     {
         count += totalNodes(child);
@@ -36,14 +36,14 @@ int totalNodes(Treenode *root)
     return count;
 }
 //get the maximum depth of the tree
-int maxDepth(Treenode *root)
+size_t maxDepth(Treenode *root)
 {
     if (root == nullptr)
     {
         return 0;
     }
 
-    int depth = 0;
+    size_t depth = 0;
     for (Treenode *child : root->children)
     {
         depth = std::max(depth, maxDepth(child));
@@ -52,9 +52,9 @@ int maxDepth(Treenode *root)
 }
 
 //store the used row and use it to avoid collision
-std::unordered_set<int> used_row;
+std::unordered_set<size_t> used_row;
 
-void modifyGrid(int row, int col, int amount, Treenode *root, std::vector<std::vector<Cell>> &grid)
+void modifyGrid(size_t row, size_t col, size_t amount, Treenode *root, std::vector<std::vector<Cell>> &grid)
 {
     if (root == nullptr)
     {
@@ -66,14 +66,14 @@ void modifyGrid(int row, int col, int amount, Treenode *root, std::vector<std::v
     used_row.insert(row);
 
     //connector
-    if ((col - 1) >= 0)
+    if (col >= 1)
     {
         grid[row][col - 1].val = "─";
         grid[row][col - 1].changed = true;
     }
 
-    int i = row - 1;
-    if ((col - 2) >= 0)
+    size_t i = row - 1;
+    if (col >= 2)
     {
         grid[row][col - 2].val = "├─";
         grid[row][col - 2].changed = true;
@@ -86,8 +86,8 @@ void modifyGrid(int row, int col, int amount, Treenode *root, std::vector<std::v
     }
 
     //get the next available coordinate
-    int next_row = row + 1;
-    int next_col = col + 2;
+    size_t next_row = row + 1;
+    size_t next_col = col + 2;
 
     while (next_row < amount and used_row.find(next_row) != used_row.end())
     {
@@ -107,11 +107,11 @@ void modifyGrid(int row, int col, int amount, Treenode *root, std::vector<std::v
 
 void lineChng(std::vector<std::vector<Cell>> &grid)
 {
-    int row = grid.size();
-    int col = grid[0].size();
-    for (int i{}; i < (row - 1); ++i)
+    size_t row = grid.size();
+    size_t col = grid[0].size();
+    for (size_t i{}; i < (row - 1); ++i)
     {
-        for (int j{}; j < col; ++j)
+        for (size_t j{}; j < col; ++j)
         {
             if (grid[i][j].val == "├─" and grid[i + 1][j].val != "│" and grid[i + 1][j].val != "├─")
             {
@@ -123,10 +123,10 @@ void lineChng(std::vector<std::vector<Cell>> &grid)
 
 void showTree(Treenode *root)
 {
-    int amount = totalNodes(root);
-    int depth = maxDepth(root);
+    size_t amount = totalNodes(root);
+    size_t depth = maxDepth(root);
 
-    std::vector<std::vector<Cell>> grid(amount + 1, std::vector<Cell>(2 * depth + 2, Cell("", false)));
+    std::vector<std::vector<Cell>> grid(amount + 2, std::vector<Cell>(2 * depth + 2, Cell("", false)));
 
     modifyGrid(0, 0, amount, root, grid);
     lineChng(grid);
@@ -177,7 +177,7 @@ int main()
     Treenode *node26 = new Treenode(26);
     Treenode *node27 = new Treenode(27);
 
-    node1->children = {node2, node3, node20};
+    /*node1->children = {node2, node3, node20};
 
     node2->children = {node4, node5};
 
@@ -199,7 +199,11 @@ int main()
     node8->children = {node25};
     node25->children = {node19};
     
-    node27->children = {node1};
+    node27->children = {node1};*/
+    
 
-    showTree(node27);
+    node1->children = {node2};
+    node2->children = {node3};
+    node3->children = {node4};
+    showTree(node1);
 }
