@@ -20,33 +20,41 @@ struct Cell
 };
 
 //get total amount of nodes
-size_t totalNodes(Treenode *root)
+size_t totalNodes(Treenode *root, std::unordered_set<Treenode*> &visited)
 {
-    if (root == nullptr)
+    if (root == nullptr or visited.find(root) != visited.end())
     {
         return 0;
+    }
+    else
+    {
+      visited.insert(root);
     }
 
     size_t count = 1;
     for (Treenode *child : root->children)
     {
-        count += totalNodes(child);
+        count += totalNodes(child, visited);
     }
 
     return count;
 }
 //get the maximum depth of the tree
-size_t maxDepth(Treenode *root)
+size_t maxDepth(Treenode *root, std::unordered_set<Treenode*> &visited)
 {
-    if (root == nullptr)
+    if (root == nullptr or visited.find(root) != visited.end())
     {
         return 0;
+    }
+    else
+    {
+      visited.insert(root);
     }
 
     size_t depth = 0;
     for (Treenode *child : root->children)
     {
-        depth = std::max(depth, maxDepth(child));
+        depth = std::max(depth, maxDepth(child, visited));
     }
     return 1 + depth;
 }
@@ -54,11 +62,15 @@ size_t maxDepth(Treenode *root)
 //store the used row and use it to avoid collision
 std::unordered_set<size_t> used_row;
 
-void modifyGrid(size_t row, size_t col, size_t amount, Treenode *root, std::vector<std::vector<Cell>> &grid)
+void modifyGrid(size_t row, size_t col, size_t amount, Treenode *root, std::vector<std::vector<Cell>> &grid, std::unordered_set<Treenode*> &visited)
 {
-    if (root == nullptr)
+    if (root == nullptr or visited.find(root) != visited.end())
     {
         return;
+    }
+    else
+    {
+      visited.insert(root);
     }
 
     grid[row][col].val = std::to_string(root->val);
@@ -97,7 +109,7 @@ void modifyGrid(size_t row, size_t col, size_t amount, Treenode *root, std::vect
     
     for (Treenode *child : root->children)
     {
-        modifyGrid(next_row, next_col, amount, child, grid);
+        modifyGrid(next_row, next_col, amount, child, grid, visited);
         while (next_row < amount and used_row.find(next_row) != used_row.end())
         {
             ++next_row;
@@ -123,12 +135,15 @@ void lineChng(std::vector<std::vector<Cell>> &grid)
 
 void showTree(Treenode *root)
 {
-    size_t amount = totalNodes(root);
-    size_t depth = maxDepth(root);
+    std::unordered_set<Treenode*> visited;
+    size_t amount = totalNodes(root, visited);
+    visited.clear();
+    size_t depth = maxDepth(root, visited);
+    visited.clear();
 
     std::vector<std::vector<Cell>> grid(amount + 2, std::vector<Cell>(2 * depth + 2, Cell("", false)));
 
-    modifyGrid(0, 0, amount, root, grid);
+    modifyGrid(0, 0, amount, root, grid, visited);
     lineChng(grid);
     for (auto v : grid)
     {
@@ -198,12 +213,12 @@ int main()
 
     node8->children = {node25};
     node25->children = {node19};
-    
-    node27->children = {node1};*/
+    node18->children = {node19};*/
     
 
     node1->children = {node2};
     node2->children = {node3};
     node3->children = {node4};
+    node4->children = {node2};
     showTree(node1);
 }
