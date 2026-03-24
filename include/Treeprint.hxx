@@ -7,17 +7,25 @@
   #define TREEPRINT_FRIEND_TESTS
 #endif
 
+#include <algorithm>
+#include <unordered_set>
 #include <vector>
 
 template<typename T>
 struct Treenode
 {
-  T value_{};
-  std::vector<Treenode*> children_{};
+public:
+  void adopt(const std::vector<Treenode*>& children)
+  {
+    children_ = children;
+  }
+  const std::vector<Treenode<T>*>& get_children() const
+  {
+    return children_;
+  }
 
-  Treenode(const T& val)
-    : value_{val}
-  {}
+private:
+  std::vector<Treenode<T>*> children_{};
 };
 
 template<typename T>
@@ -30,10 +38,10 @@ class Treeprint
 {
 public:
   Treeprint() = default;
-  bool init(Treenode<T>* head)
+  bool init(Treenode<T>* root)
   {
-    mHead = head;
-    return true;
+    mRoot = root;
+    return (root != nullptr);
   }
   bool is_printable() const
   {
@@ -42,7 +50,8 @@ public:
 
 private:
   bool mIsPrintable{true};
-  Treenode<T>* mHead{nullptr};
+  Treenode<T>* mRoot{nullptr};
+  std::unordered_set<Treenode<T>*> mVisited{};
 
 private:
   TREEPRINT_FRIEND_TESTS
