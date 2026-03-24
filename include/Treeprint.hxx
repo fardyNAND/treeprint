@@ -2,7 +2,8 @@
 #define TREEPRINT_HXX
 
 #ifdef TREEPRINT_TESTING
-  #define TREEPRINT_FRIEND_TESTS
+  #define TREEPRINT_FRIEND_TESTS \
+    FRIEND_TEST(TreeprintTest, NodeNumber);
 #else
   #define TREEPRINT_FRIEND_TESTS
 #endif
@@ -15,7 +16,7 @@ template<typename T>
 struct Treenode
 {
 public:
-  void adopt(const std::vector<Treenode*>& children)
+  void adopt(const std::vector<Treenode<T>*>& children)
   {
     children_ = children;
   }
@@ -49,9 +50,22 @@ public:
   }
 
 private:
+  size_t getTotalNodes(Treenode<T>* root)
+  {
+    if (root == nullptr)
+      return 0;
+    
+    size_t count{1};
+    const std::vector<Treenode<T>*> children{root->get_children()};
+    for (Treenode<T>* child : children)
+      count += getTotalNodes(child);
+
+    return count;
+  }
+
+private:
   bool mIsPrintable{true};
   Treenode<T>* mRoot{nullptr};
-  std::unordered_set<Treenode<T>*> mVisited{};
 
 private:
   TREEPRINT_FRIEND_TESTS
