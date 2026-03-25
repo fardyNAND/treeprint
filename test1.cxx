@@ -192,7 +192,7 @@ int main()
     Treenode *node26 = new Treenode(26);
     Treenode *node27 = new Treenode(27);
 
-    /*node1->children = {node2, node3, node20};
+    node1->children = {node2, node3, node20};
 
     node2->children = {node4, node5};
 
@@ -213,12 +213,11 @@ int main()
 
     node8->children = {node25};
     node25->children = {node19};
-    node18->children = {node19};*/
     
 
-    node1->children = {node2};
-    node2->children = {node3};
-    node3->children = {node4};
-    node4->children = {node2};
+    // node1->children = {node2};
+    // node2->children = {node3};
+    // node3->children = {node4};
+    // node4->children = {node2};
     showTree(node1);
 }
