@@ -11,7 +11,7 @@ struct Node : public Treenode<int>
   {}
 };
 
-TEST(TreeprintTest, NodeNumber)
+TEST(TreeprintTest, NodeClear)
 {
   Node* n1{new Node{11}};
   Node* n2{new Node{22}};
@@ -25,23 +25,12 @@ TEST(TreeprintTest, NodeNumber)
   n4->adopt({n5});
   n2->adopt({n3, n4});
   n1->adopt({n2});
-
-  Treeprint<int> tp;
-  tp.init(n1);
-  EXPECT_EQ(tp.getTotalNodes(n1), 5);
-  EXPECT_EQ(tp.getTotalNodes(n2), 4);
-  EXPECT_EQ(tp.getTotalNodes(n3), 1);
-  EXPECT_EQ(tp.getTotalNodes(n4), 2);
-  EXPECT_EQ(tp.getTotalNodes(n5), 1);
-  EXPECT_EQ(tp.getTotalNodes(nullptr), 0);
-
   n5->adopt({n6});
   n6->adopt({n7});
   n7->adopt({n8});
-  EXPECT_EQ(tp.getTotalNodes(n5), 4);
-  EXPECT_EQ(tp.getTotalNodes(n6), 3);
-  EXPECT_EQ(tp.getTotalNodes(n7), 2);
-  EXPECT_EQ(tp.getTotalNodes(n8), 1);
+
+  n1->clear();
+  EXPECT_EQ(n1->get_children().size(), 0);
 
   delete n1;
   delete n2;

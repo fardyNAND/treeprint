@@ -3,18 +3,15 @@
 
 #ifdef TREEPRINT_TESTING
   #define TREEPRINT_FRIEND_TESTS \
-    FRIEND_TEST(TreeprintTest, NodeNumber);
+    FRIEND_TEST(TreeprintTest, NodeClear);
 #else
   #define TREEPRINT_FRIEND_TESTS
 #endif
 
-#include <algorithm>
-#include <cassert>
-#include <exception>
-#include <stack>
-#include <stdexcept>
-#include <unordered_set>
+#include <string>
 #include <vector>
+
+#define NAMEOF(x);
 
 template<typename T>
 struct Treenode
@@ -28,15 +25,17 @@ public:
   {
     return children_;
   }
+  void clear()
+  {
+    children_.clear();
+  }
 
 private:
   std::vector<Treenode<T>*> children_{};
 };
 
-template<typename T>
 struct Cell
-{
-};
+{};
 
 template<typename T>
 class Treeprint
@@ -48,48 +47,9 @@ public:
     mRoot = root;
     return (root != nullptr);
   }
-  bool is_printable() const
-  {
-    return mIsPrintable;
-  }
 
 private:
-  size_t getTotalNodes(Treenode<T>* root)
-  {
-    mVisited.clear();
-    if (root == nullptr)
-      return 0;
-
-    std::stack<Treenode<T>*> stack{};
-    stack.push(root);
-    size_t count{};
-
-    while (stack.empty() == false)
-    {
-      Treenode<T>* current{stack.top()};
-      stack.pop();
-      ++count;
-
-      if (mVisited.find(current) != mVisited.end())
-      {
-        return 0;
-      }
-      else mVisited.insert(current);
-
-      for (Treenode<T>* node : current->get_children())
-      {
-        if (node != nullptr)
-          stack.push(node);
-      }
-    }
-
-    return count;
-  }
-
-private:
-  bool mIsPrintable{true};
   Treenode<T>* mRoot{nullptr};
-  std::unordered_set<Treenode<T>*> mVisited{};
 
 private:
   TREEPRINT_FRIEND_TESTS
