@@ -25,20 +25,31 @@ std::unordered_set<size_t> used_row;
 
 void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<Cell>> &grid, std::unordered_set<Treenode *> &visited)
 {
-  //when the node is null or it is already visited
-  if (root == nullptr or visited.find(root) != visited.end())
+  //when the node is null
+  if (root == nullptr)
   {
     return;
   }
-  else
+  //if the node is already visited, empty the children of the node to block the cycle
+  if (visited.find(root) != visited.end())
   {
-    visited.insert(root);
+    root->children.clear();
   }
 
-  //else create new cell in the grid and then insert
+  //create new row in the grid of specific size
   std::vector<Cell> vec{col + 1, Cell{"", false}};
   grid.push_back(vec);
-  grid[row][col].val = std::to_string(root->val);
+
+  //insert val in the Cell
+  if (visited.find(root) != visited.end())//put cross instead of the val of the node if the node is already visited
+  {
+    grid[row][col].val = "❌";
+  }
+  else //if not visited, insert val
+  {
+    grid[row][col].val = std::to_string(root->val);
+    visited.insert(root);
+  }
   grid[row][col].changed = true;
   used_row.insert(row);
 
@@ -93,7 +104,7 @@ void lineChng(std::vector<std::vector<Cell>> &grid)
   {
     for (size_t j{}; j < grid[i].size(); ++j)
     {
-      bool T_L{false};
+      bool T_L{false}; 
       if (grid[i][j].val == "├─")
       {
 
@@ -176,33 +187,32 @@ int main()
   Treenode *node26 = new Treenode(26);
   Treenode *node27 = new Treenode(27);
 
-  // node1->children = {node2, node3, node20};
-  //
-  // node2->children = {node4, node5};
-  //
-  // node4->children = {node6, node7};
-  //
-  // node5->children = {node8, node9, node25, node19};
-  //
-  // node7->children = {node10, node11};
-  //
-  // node10->children = {node12, node13};
-  //
-  // node10->children = {node12};
-  // node12->children = {node13};
-  // node13->children = {node14};
-  //
-  // node20->children = {node15, node16, node17};
-  // node16->children = {node18, node19, node21};
-  //
-  // node8->children = {node25};
-  // node8->children = {node19};
+  node1->children = {node2, node3, node20};
+
+  node2->children = {node4, node5};
+
+  node4->children = {node6, node7};
+
+  node5->children = {node8, node9, node25, node19};
+
+  node7->children = {node10, node11};
+
+  node10->children = {node12, node13};
+
+  node10->children = {node12};
+  node12->children = {node13};
+  node13->children = {node14};
+
+  node20->children = {node15, node16, node17};
+  node16->children = {node18, node19, node21};
+
+  node8->children = {node25};
 
 
-  node1->children = {node2};
+  // node1->children = {node2};
   // node2->children = {node3};
   // node3->children = {node4};
-  // node4->children = {node2};
+  // node4->children = {node1};
   showTree(node1);
 
 }

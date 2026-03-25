@@ -151,7 +151,7 @@ void showTree(Treenode *root)
         {
             if (n.val == "")
             {
-                std::cout << "  ";
+                std::cout << ". ";
             }
             else
             {
