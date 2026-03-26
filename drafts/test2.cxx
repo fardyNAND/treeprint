@@ -30,11 +30,6 @@ void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<
   {
     return;
   }
-  //if the node is already visited, empty the children of the node to block the cycle
-  if (visited.find(root) != visited.end())
-  {
-    root->children.clear();
-  }
 
   //create new row in the grid of specific size
   std::vector<Cell> vec{col + 1, Cell{"", false}};
@@ -43,12 +38,11 @@ void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<
   //insert val in the Cell
   if (visited.find(root) != visited.end())//put cross instead of the val of the node if the node is already visited
   {
-    grid[row][col].val = "❌";
+    grid[row][col].val = "❌️";
   }
   else //if not visited, insert val
   {
     grid[row][col].val = std::to_string(root->val);
-    visited.insert(root);
   }
   grid[row][col].changed = true;
   used_row.insert(row);
@@ -77,7 +71,7 @@ void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<
 
   //get the next available coordinate
   size_t next_row = row + 1;
-  size_t next_col = col + 2;
+  size_t next_col = col + 2; //keep next col(col + 1) for a horizontal line
 
 
   while (used_row.find(next_row) != used_row.end())
@@ -85,9 +79,18 @@ void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<
     ++next_row;
   }
 
+  
+  //prepare next generation
+  std::vector<Treenode *> childs{root->children};
+  //but if, the parent ia already visited, ignore the children
+  if (visited.find(root) != visited.end())
+  {
+    childs.clear();
+  }
+  visited.insert(root);
 
   //recursion
-  for (Treenode *child : root->children)
+  for (Treenode *child : childs)
   {
     modifyGrid(next_row, next_col, child, grid, visited);
     while (used_row.find(next_row) != used_row.end())
@@ -186,6 +189,9 @@ int main()
   Treenode *node25 = new Treenode(25);
   Treenode *node26 = new Treenode(26);
   Treenode *node27 = new Treenode(27);
+  Treenode *node28 = new Treenode(28);
+  Treenode *node29 = new Treenode(29);
+  Treenode *node30 = new Treenode(30);
 
   node1->children = {node2, node3, node20};
 
@@ -208,11 +214,37 @@ int main()
 
   node8->children = {node25};
 
-
   // node1->children = {node2};
   // node2->children = {node3};
   // node3->children = {node4};
-  // node4->children = {node1};
+  // node4->children = {node5};
+  // node5->children = {node6};
+  // node6->children = {node7};
+  // node7->children = {node8};
+  // node8->children = {node9};
+  // node9->children = {node10};
+  // node10->children = {node11};
+  // node11->children = {node12};
+  // node12->children = {node13};
+  // node13->children = {node14};
+  // node14->children = {node15};
+  // node15->children = {node16};
+  // node16->children = {node17};
+  // node17->children = {node18, node30};
+  // node18->children = {node19};
+  // node19->children = {node20};
+  // node20->children = {node21};
+  // node21->children = {node22};
+  // node22->children = {node23};
+  // node23->children = {node24};
+  // node24->children = {node25};
+  // node25->children = {node26};
+  // node26->children = {node27};
+  // node27->children = {node28};
+  // node28->children = {node29};
+  // node29->children = {node30};
+  //
+  //
   showTree(node1);
 
 }
