@@ -3,7 +3,7 @@
 #define TREEPRINT_TESTING
 #include "Treeprint.hxx"
 
-struct Node : public Treenode<int>
+struct Node : public Treenode
 {
   int val{};
   Node(int x)

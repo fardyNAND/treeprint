@@ -11,17 +11,14 @@
 #include <string>
 #include <vector>
 
-#define NAMEOF(x);
-
-template<typename T>
 struct Treenode
 {
 public:
-  void adopt(const std::vector<Treenode<T>*>& children)
+  void adopt(const std::vector<Treenode*>& children)
   {
     children_ = children;
   }
-  const std::vector<Treenode<T>*>& get_children() const
+  const std::vector<Treenode*>& get_children() const
   {
     return children_;
   }
@@ -31,25 +28,30 @@ public:
   }
 
 private:
-  std::vector<Treenode<T>*> children_{};
+  std::vector<Treenode*> children_{};
 };
 
 struct Cell
 {};
 
-template<typename T>
 class Treeprint
 {
 public:
   Treeprint() = default;
-  bool init(Treenode<T>* root)
+  Treeprint(const Treeprint&) = delete;
+  Treeprint& operator=(const Treeprint&) = delete;
+  Treeprint(Treeprint&&) = delete;
+  Treeprint& operator=(Treeprint&&) = delete;
+  template<typename T>
+    requires std::derived_from<T, Treenode>
+  bool init(T* root)
   {
     mRoot = root;
     return (root != nullptr);
   }
 
 private:
-  Treenode<T>* mRoot{nullptr};
+  Treenode* mRoot{nullptr};
 
 private:
   TREEPRINT_FRIEND_TESTS
