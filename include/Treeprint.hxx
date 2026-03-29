@@ -75,15 +75,17 @@ public:
     mRoot = root;
     return (root != nullptr);
   }
-
   void register_tag(Tagtype Nodetype::* ptr)
   {
     mPtr = ptr;
   }
-
   void print()
   {
     this->display();
+  }
+  void clear()
+  {
+    this->flush();
   }
 
 private:
@@ -194,6 +196,15 @@ private:
       }
       std::cout << std::endl;
     }
+  }
+
+  void flush()
+  {
+    mRoot = nullptr;
+    mPtr = nullptr;
+    mGrid.clear();
+    mVisited.clear();
+    mUsedRow.clear();
   }
 
 private:
