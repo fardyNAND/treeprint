@@ -183,6 +183,8 @@ private:
 
   void display()
   {
+    if (mPtr == nullptr)
+      return;
     this->modifyGrid(0, 0, mRoot);
     this->modifyLine();
     for (auto v : mGrid)
