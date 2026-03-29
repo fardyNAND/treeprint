@@ -94,6 +94,14 @@ private:
   {
     if constexpr (std::same_as<std::decay_t<T>, std::string>)
       return val;
+    else if constexpr (std::is_floating_point_v<T>)
+    {
+      std::string temp{std::to_string(val)};
+      temp.erase(temp.find_last_not_of("0") + 1, std::string::npos);
+      if (temp.back() == '.')
+        temp.push_back('0');
+      return temp;
+    }
     else
       return std::to_string(val);
   }
