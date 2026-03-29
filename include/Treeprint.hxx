@@ -35,6 +35,12 @@ private:
 
 struct Cell
 {
+  std::string val_{};
+  bool changed_{false};
+
+  Cell(const std::string& s, bool c)
+    : val_{s},
+      changed_{c} {};
 };
 
 template <typename T>
