@@ -8,7 +8,9 @@
   #define TREEPRINT_FRIEND_TESTS
 #endif
 
+#include <concepts>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 struct Treenode
@@ -34,6 +36,14 @@ private:
 struct Cell
 {};
 
+template<typename T>
+concept Stringable =
+  std::convertible_to<T, std::string> or
+  requires (T val)
+  {
+    { std::to_string(val) } -> std::convertible_to<std::string>;
+  };
+
 class Treeprint
 {
 public:
@@ -48,6 +58,16 @@ public:
   {
     mRoot = root;
     return (root != nullptr);
+  }
+
+private:
+  template<typename U>
+  std::string emitString(U val)
+  {
+    if constexpr (std::same_as<std::decay_t<U>, std::string>)
+      return val;
+    else
+      return std::to_string(val);
   }
 
 private:
