@@ -93,25 +93,25 @@ private:
   {
     if (mRoot == nullptr)
       return;
-    
+
     std::vector<Cell> vec{col + 1, Cell{"", false}};
     mGrid.push_back(vec);
-    
+
     if (mVisited.find(mRoot) != mVisited.end())
       mGrid[row][col].val_ = "❌️";
     else
       mGrid[row][col].val_ = std::to_string(mPtr);
     mGrid[row][col].changed_ = true;
     mUsedRow.insert(row);
-    
+
     if (col > 1)
     {
-      mGrid[row][col-1].val_ = "─";
-      mGrid[row][col-1].changed_ = true;
+      mGrid[row][col - 1].val_ = "─";
+      mGrid[row][col - 1].changed_ = true;
     }
-    
+
     size_t i{row - 1};
-    if(col >= 2)
+    if (col >= 2)
     {
       mGrid[row][col - 2].val_ = "├─";
       mGrid[row][col - 2].changed_ = true;
@@ -122,7 +122,7 @@ private:
         --i;
       }
     }
-    
+
     size_t next_row{row + 1};
     size_t next_col{col + 2};
 
@@ -144,6 +144,30 @@ private:
       while (mUsedRow.find(next_row) != mUsedRow.end())
       {
         ++next_row;
+      }
+    }
+  }
+
+  void modifyLine()
+  {
+    for (size_t i{}; i < mGrid.size(); ++i)
+    {
+      for (size_t j{}; j < mGrid[i].size(); ++j)
+      {
+        bool T_L{false};
+        if (mGrid[i][j].val_ == "├─")
+        {
+
+          if ((i + 1) >= mGrid.size())
+            T_L = true;
+          else if (j >= (mGrid[i + 1].size() - 1))
+            T_L = true;
+          else if (mGrid[i + 1][j].val_ != "│" and mGrid[i + 1][j].val_ != "├─")
+            T_L = true;
+        }
+
+        if (T_L)
+          mGrid[i][j].val_ = "└─";
       }
     }
   }
