@@ -8,8 +8,10 @@
 #define TREEPRINT_FRIEND_TESTS
 #endif
 
+#include <algorithm>
 #include <concepts>
 #include <cstddef>
+#include <iostream>
 #include <string>
 #include <type_traits>
 #include <unordered_set>
@@ -79,6 +81,11 @@ public:
     mPtr = ptr;
   }
 
+  void print()
+  {
+    this->display();
+  }
+
 private:
   template <typename T>
   std::string emitString(T val)
@@ -89,18 +96,18 @@ private:
       return std::to_string(val);
   }
 
-  void modifyGrid(size_t row, size_t col)
+  void modifyGrid(size_t row, size_t col, Treenode* root)
   {
-    if (mRoot == nullptr)
+    if (root == nullptr)
       return;
 
     std::vector<Cell> vec{col + 1, Cell{"", false}};
     mGrid.push_back(vec);
 
-    if (mVisited.find(mRoot) != mVisited.end())
+    if (mVisited.find(root) != mVisited.end())
       mGrid[row][col].val_ = "❌️";
     else
-      mGrid[row][col].val_ = std::to_string(mPtr);
+      mGrid[row][col].val_ = this->emitString(static_cast<Nodetype*>(root)->*mPtr);
     mGrid[row][col].changed_ = true;
     mUsedRow.insert(row);
 
@@ -131,16 +138,16 @@ private:
       ++next_row;
     }
 
-    std::vector<Treenode*> children{mRoot->get_children()};
-    if (mVisited.find(mRoot) != mVisited.end())
+    std::vector<Treenode*> children{root->get_children()};
+    if (mVisited.find(root) != mVisited.end())
     {
       children.clear();
     }
-    mVisited.insert(mRoot);
+    mVisited.insert(root);
 
     for (Treenode* child : children)
     {
-      modifyGrid(next_row, next_col, child, mGrid, mVisited);
+      modifyGrid(next_row, next_col, child);
       while (mUsedRow.find(next_row) != mUsedRow.end())
       {
         ++next_row;
@@ -172,11 +179,28 @@ private:
     }
   }
 
+  void display()
+  {
+    this->modifyGrid(0, 0, mRoot);
+    this->modifyLine();
+    for (auto v : mGrid)
+    {
+      for (auto n : v)
+      {
+        if (n.val_ == "")
+          std::cout << "  ";
+        else
+          std::cout << n.val_;
+      }
+      std::cout << std::endl;
+    }
+  }
+
 private:
   Treenode* mRoot{nullptr};
   Tagtype Nodetype::* mPtr{nullptr};
   std::vector<std::vector<Cell>> mGrid{};
-  std::unordered_set<Nodetype*> mVisited{};
+  std::unordered_set<Treenode*> mVisited{};
   std::unordered_set<size_t> mUsedRow{};
 
 private:
