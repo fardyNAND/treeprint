@@ -45,7 +45,8 @@ Make our nodes foster some children.
 
 It's `Treeprint` time! `Treeprint` takes the shape `Treeprint<Node, T>` where Node is a struct/class inherited from `Treenode` and `T` is a data type convertible to `std::string`. `T` is the type of thing that you're going to print in terminal.
 ```cpp
-Treeprint<Node, std::string> tp;  // This means the data member that you're going to print is a std::string belonging in Node. You can register whatever you want as long as they are convertible to std::string.
+// This means the data member that you're going to print is a std::string belonging in Node. You can register whatever you want as long as they are convertible to std::string.
+Treeprint<Node, std::string> tp
 ```
 
 Initialize `Treeprint` with a root node.
