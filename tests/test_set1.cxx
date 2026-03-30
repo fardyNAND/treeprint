@@ -22,12 +22,12 @@ TEST(TreeprintTest, NodeClear)
   Node* n7{new Node{77}};
   Node* n8{new Node{88}};
 
-  n4->adopt({n5});
-  n2->adopt({n3, n4});
-  n1->adopt({n2});
-  n5->adopt({n6});
-  n6->adopt({n7});
-  n7->adopt({n8});
+  n4->adopt(n5);
+  n2->adopt(n3, n4);
+  n1->adopt(n2);
+  n5->adopt(n6);
+  n6->adopt(n7);
+  n7->adopt(n8);
 
   n1->clear();
   EXPECT_EQ(n1->get_children().size(), 0);

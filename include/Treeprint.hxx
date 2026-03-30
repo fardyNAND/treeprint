@@ -20,9 +20,12 @@
 struct Treenode
 {
 public:
-  void adopt(const std::vector<Treenode*>& children)
+  template<typename... Args>
+  void adopt(Args&&... children)
   {
-    children_ = children;
+    size_t nargs{sizeof...(children)};
+    children_.reserve(nargs);
+    (children_.push_back(children), ...);
   }
   const std::vector<Treenode*>& get_children() const
   {
