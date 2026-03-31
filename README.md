@@ -76,7 +76,7 @@ n1
     └──n4
 ```
 
-Your might get clever and do something like this:
+You might get clever and do something like this:
 ```cpp
 n7->adopt(n6, n5);
 ```
