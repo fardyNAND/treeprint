@@ -45,7 +45,8 @@ Make our nodes foster some children i.e. connect the nodes. `n1->adopt(n2)` mean
 
 It's `Treeprint` time! `Treeprint` takes the shape `Treeprint<Node, T>` where Node is a struct/class inherited from `Treenode` and `T` is a data type convertible to `std::string`. `T` is the type of data member that you want to print in terminal.
 ```cpp
-// This means the data member that you're going to print is a std::string belonging in Node. You can register whatever you want as long as they are convertible to std::string.
+// This means the data member that want to print is a std::string belonging in Node.
+// You can register whatever you want as long as they are convertible to std::string.
 Treeprint<Node, std::string> tp;
 ```
 
