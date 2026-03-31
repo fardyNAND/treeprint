@@ -22,7 +22,7 @@ struct Node : public Treenode
 };
 ```
 
-Let's beg some memories for our nodes.
+Let's beg some memories for our nodes (use bags of smart pointers if you want).
 ```cpp
   Node* n1{new Node{11, 11.11, "n1"}};
   Node* n2{new Node{22, 22.22, "n2"}};
@@ -34,7 +34,7 @@ Let's beg some memories for our nodes.
   Node* n8{new Node{88, 88.88, "n8"}};
 ```
 
-Make our nodes foster some children.
+Make our nodes foster some children i.e. connect the nodes. `n1->adopt(n2)` means connecting `n2` to `n1`. `adopt()` is variadic so you can connect as many nodes as you want.
 ```cpp
   n7->adopt(n8);
   n6->adopt(n7);
@@ -43,7 +43,7 @@ Make our nodes foster some children.
   n1->adopt(n2);
 ```
 
-It's `Treeprint` time! `Treeprint` takes the shape `Treeprint<Node, T>` where Node is a struct/class inherited from `Treenode` and `T` is a data type convertible to `std::string`. `T` is the type of thing that you're going to print in terminal.
+It's `Treeprint` time! `Treeprint` takes the shape `Treeprint<Node, T>` where Node is a struct/class inherited from `Treenode` and `T` is a data type convertible to `std::string`. `T` is the type of data member that you want to print in terminal.
 ```cpp
 // This means the data member that you're going to print is a std::string belonging in Node. You can register whatever you want as long as they are convertible to std::string.
 Treeprint<Node, std::string> tp;
