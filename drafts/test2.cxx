@@ -14,16 +14,18 @@ struct Treenode
 
 struct Cell
 {
+  Treenode *address{nullptr};
   std::string val{};
   bool changed{false};
 
+  Cell(Treenode *a, std::string s, bool c) : address(a), val(s), changed(c) {};
   Cell(std::string s, bool c) : val(s), changed(c) {};
 };
 
 
-std::unordered_set<size_t> used_row;
+//std::unordered_set<size_t> used_row;
 
-void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<Cell>> &grid, std::unordered_set<Treenode *> &visited)
+void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<Cell>> &grid, std::unordered_set<Treenode *> &visited, std::unordered_set<size_t> &usedRow)
 {
   //when the node is null
   if (root == nullptr)
@@ -42,10 +44,11 @@ void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<
   }
   else //if not visited, insert val
   {
+    grid[row][col].address = root;
     grid[row][col].val = std::to_string(root->val);
   }
   grid[row][col].changed = true;
-  used_row.insert(row);
+  usedRow.insert(row);
 
   //connector
   if (col > 1)
@@ -74,15 +77,15 @@ void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<
   size_t next_col = col + 2; //keep next col(col + 1) for a horizontal line
 
 
-  while (used_row.find(next_row) != used_row.end())
+  while (usedRow.find(next_row) != usedRow.end())
   {
     ++next_row;
   }
 
-  
+
   //prepare next generation
   std::vector<Treenode *> childs{root->children};
-  //but if, the parent ia already visited, ignore the children
+  //but if, the parent is already visited, ignore the children
   if (visited.find(root) != visited.end())
   {
     childs.clear();
@@ -92,8 +95,8 @@ void modifyGrid(size_t row, size_t col, Treenode *root, std::vector<std::vector<
   //recursion
   for (Treenode *child : childs)
   {
-    modifyGrid(next_row, next_col, child, grid, visited);
-    while (used_row.find(next_row) != used_row.end())
+    modifyGrid(next_row, next_col, child, grid, visited, usedRow);
+    while (usedRow.find(next_row) != usedRow.end())
     {
       ++next_row;
     }
@@ -107,7 +110,7 @@ void lineChng(std::vector<std::vector<Cell>> &grid)
   {
     for (size_t j{}; j < grid[i].size(); ++j)
     {
-      bool T_L{false}; 
+      bool T_L{false};
       if (grid[i][j].val == "├─")
       {
 
@@ -133,13 +136,9 @@ void lineChng(std::vector<std::vector<Cell>> &grid)
   }
 }
 
-void showTree(Treenode *root)
-{
-  std::vector<std::vector<Cell>> grid;
 
-  std::unordered_set<Treenode *> visited;
-  modifyGrid(0, 0, root, grid, visited);
-  lineChng(grid);
+void printGrid(std::vector<std::vector<Cell>> &grid)
+{
 
   for (auto v : grid)
   {
@@ -156,6 +155,83 @@ void showTree(Treenode *root)
     }
     std::cout << "\n";
   }
+}
+
+
+
+void showTree(Treenode *root)
+{
+  std::vector<std::vector<Cell>> grid;
+
+  std::unordered_set<Treenode *> visited;
+  std::unordered_set<size_t> usedRow;
+
+  modifyGrid(0, 0, root, grid, visited, usedRow);
+  lineChng(grid);
+
+  printGrid(grid);
+}
+
+
+void pathToRoot(std::vector<std::vector<Cell>> &grid, Treenode *target)
+{
+  for (size_t row{}; row < grid.size(); ++row)
+  {
+    size_t lastCol = grid[row].size() - 1;
+    if (target == grid[row][lastCol].address)
+    {
+      while (lastCol >= 0)
+      {
+        while (row > 0 and(grid[row][lastCol].val == "├─" or grid[row][lastCol].val == "│" or grid[row][lastCol].val == "└─"))
+        {
+          --row;
+        }
+
+        if (grid[row][lastCol].val.rfind("🔸", 0) == 0)
+        {
+          if (lastCol < 2) break;
+          lastCol -= 2;
+          //erase the root path
+          while (lastCol >= 0)
+          {
+            while (row > 0 and(grid[row][lastCol].val == "├─" or grid[row][lastCol].val == "│" or grid[row][lastCol].val == "└─"))
+            {
+              --row;
+            }
+
+            grid[row][lastCol].val.erase(0, std::string("🔸").size());
+
+            if (lastCol < 2) break;
+            lastCol -= 2;
+          }
+          break;
+        }
+
+        grid[row][lastCol].val = "🔸" + grid[row][lastCol].val;
+
+        if (lastCol < 2) break;
+        lastCol -= 2;
+      }
+      break;
+    }
+  }
+}
+
+void tracePath(Treenode *root, Treenode *a, Treenode* b)
+{
+  std::vector<std::vector<Cell>> grid;
+
+  std::unordered_set<Treenode *> visited;
+  std::unordered_set<size_t> usedRow;
+
+  modifyGrid(0, 0, root, grid, visited, usedRow);
+  lineChng(grid);
+
+  pathToRoot(grid, a);
+  pathToRoot(grid, b);
+  //common path is also being erased in the pathToRoot function
+
+  printGrid(grid);
 }
 
 
@@ -183,14 +259,14 @@ int main()
   Treenode *node19 = new Treenode(19);
   Treenode *node20 = new Treenode(20);
   Treenode *node21 = new Treenode(21);
-  Treenode *node22 = new Treenode(22);
-  Treenode *node23 = new Treenode(23);
-  Treenode *node24 = new Treenode(24);
+  // Treenode *node22 = new Treenode(22);
+  // Treenode *node23 = new Treenode(23);
+  // Treenode *node24 = new Treenode(24);
   Treenode *node25 = new Treenode(25);
-  Treenode *node26 = new Treenode(26);
-  Treenode *node27 = new Treenode(27);
-  Treenode *node28 = new Treenode(28);
-  Treenode *node29 = new Treenode(29);
+  // Treenode *node26 = new Treenode(26);
+  // Treenode *node27 = new Treenode(27);
+  // Treenode *node28 = new Treenode(28);
+  // Treenode *node29 = new Treenode(29);
   Treenode *node30 = new Treenode(30);
 
   node1->children = {node2, node3, node20};
@@ -199,7 +275,7 @@ int main()
 
   node4->children = {node6, node7};
 
-  node5->children = {node8, node9, node25, node19};
+  node5->children = {node8, node9, node19};
 
   node7->children = {node10, node11};
 
@@ -210,7 +286,7 @@ int main()
   node13->children = {node14};
 
   node20->children = {node15, node16, node17};
-  node16->children = {node18, node19, node21};
+  node16->children = {node18, node30, node21};
 
   node8->children = {node25};
 
@@ -245,6 +321,7 @@ int main()
   // node29->children = {node30};
   //
   //
-  showTree(node1);
+  //showTree(node1);
+  tracePath(node1, node21, node25);
 
 }
