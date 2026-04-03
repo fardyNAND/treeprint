@@ -5,6 +5,7 @@ dist/
 docs/
 driver/
 lib/
+tests/main.cxx
 .bd
 .envrc
 .hashdirs

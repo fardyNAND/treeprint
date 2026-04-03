@@ -69,5 +69,45 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
 endif()
 
+function(apply_strict_flags target)
+  target_compile_options(${target} PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Werror
+    -Wshadow
+    -Wconversion
+    -Wsign-conversion
+    -Wformat=2
+    -Wundef
+    -Wcast-align
+    -Wcast-qual
+    -Wdouble-promotion
+    -Wnull-dereference
+    -Wold-style-cast
+    -Woverloaded-virtual
+    -Wnon-virtual-dtor
+    -Wimplicit-fallthrough
+    -Wredundant-decls
+    -Wswitch-enum
+    -Wzero-as-null-pointer-constant
+    -fno-exceptions
+    -fno-rtti
+  )
+endfunction()
+
+function(apply_loose_flags target)
+  target_compile_options(${target} PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Werror
+    -Wno-unused-variable
+    -Wno-unused-but-set-variable
+    -Wno-unused-private-field
+    -Wno-unused-parameter
+  )
+endfunction()
+
 add_subdirectory(tests)
 
