@@ -17,6 +17,42 @@
 #include <unordered_set>
 #include <vector>
 
+namespace color
+{
+
+typedef std::string s;
+
+inline s col(const std::string& x)
+{
+  return "\033[" + x + "m";
+};
+
+inline s res{col("0")};
+inline s bol{col("1")};
+inline s und{col("4")};
+inline s bli{col("5")};
+inline s inv{col("7")};
+
+inline s fblack{col("30")};
+inline s fred{col("31")};
+inline s fgreen{col("32")};
+inline s fyellow{col("33")};
+inline s fblue{col("34")};
+inline s fmagenta{col("35")};
+inline s fcyan{col("36")};
+inline s fwhite{col("37")};
+
+inline s bblack{col("40")};
+inline s bred{col("41")};
+inline s bgreen{col("42")};
+inline s byellow{col("43")};
+inline s bblue{col("44")};
+inline s bmagenta{col("45")};
+inline s bcyan{col("46")};
+inline s bwhite{col("47")};
+
+}
+
 struct Treenode
 {
 public:
