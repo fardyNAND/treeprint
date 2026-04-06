@@ -136,6 +136,36 @@ void lineChng(std::vector<std::vector<Cell>> &grid)
   }
 }
 
+//draw a path from the root of the tree to the target node
+void pathToRoot(std::vector<std::vector<Cell>> &grid, Treenode *target)
+{
+  for (size_t row{}; row < grid.size(); ++row)
+  {
+    size_t lastCol = grid[row].size() - 1;
+    if (target == grid[row][lastCol].address)
+    {
+      while (lastCol >= 0)
+      {
+        while (row > 0 and(grid[row][lastCol].val == "├─" or grid[row][lastCol].val == "│" or grid[row][lastCol].val == "└─"))
+        {
+          --row;
+        }
+        if (grid[row][lastCol].val.rfind("🔸", 0) == 0)
+        {
+          break;
+        }
+        grid[row][lastCol].val = "🔸" + grid[row][lastCol].val;
+
+        if (lastCol < 2)
+          break;
+        lastCol -= 2;
+      }
+      break;
+    }
+  }
+}
+
+
 
 void printGrid(std::vector<std::vector<Cell>> &grid)
 {
@@ -159,7 +189,7 @@ void printGrid(std::vector<std::vector<Cell>> &grid)
 
 
 
-void showTree(Treenode *root)
+void showTree(Treenode *root, std::vector<Treenode *> targets)
 {
   std::vector<std::vector<Cell>> grid;
 
@@ -169,72 +199,14 @@ void showTree(Treenode *root)
   modifyGrid(0, 0, root, grid, visited, usedRow);
   lineChng(grid);
 
-  printGrid(grid);
-}
-
-
-void pathToRoot(std::vector<std::vector<Cell>> &grid, Treenode *target)
-{
-  for (size_t row{}; row < grid.size(); ++row)
+  //draw the paths from root to target nodes
+  for (auto N : targets)
   {
-    size_t lastCol = grid[row].size() - 1;
-    if (target == grid[row][lastCol].address)
-    {
-      while (lastCol >= 0)
-      {
-        while (row > 0 and(grid[row][lastCol].val == "├─" or grid[row][lastCol].val == "│" or grid[row][lastCol].val == "└─"))
-        {
-          --row;
-        }
-
-        if (grid[row][lastCol].val.rfind("🔸", 0) == 0)
-        {
-          if (lastCol < 2) break;
-          lastCol -= 2;
-          //erase the root path
-          while (lastCol >= 0)
-          {
-            while (row > 0 and(grid[row][lastCol].val == "├─" or grid[row][lastCol].val == "│" or grid[row][lastCol].val == "└─"))
-            {
-              --row;
-            }
-
-            grid[row][lastCol].val.erase(0, std::string("🔸").size());
-
-            if (lastCol < 2) break;
-            lastCol -= 2;
-          }
-          break;
-        }
-
-        grid[row][lastCol].val = "🔸" + grid[row][lastCol].val;
-
-        if (lastCol < 2) break;
-        lastCol -= 2;
-      }
-      break;
-    }
+    pathToRoot(grid, N);
   }
-}
-
-void tracePath(Treenode *root, Treenode *a, Treenode* b)
-{
-  std::vector<std::vector<Cell>> grid;
-
-  std::unordered_set<Treenode *> visited;
-  std::unordered_set<size_t> usedRow;
-
-  modifyGrid(0, 0, root, grid, visited, usedRow);
-  lineChng(grid);
-
-  pathToRoot(grid, a);
-  pathToRoot(grid, b);
-  //common path is also being erased in the pathToRoot function
 
   printGrid(grid);
 }
-
-
 
 int main()
 {
@@ -321,7 +293,6 @@ int main()
   // node29->children = {node30};
   //
   //
-  //showTree(node1);
-  tracePath(node1, node21, node25);
+  showTree(node4, {node13, node11, node25, node21});
 
 }
